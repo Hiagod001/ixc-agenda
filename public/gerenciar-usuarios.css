@@ -1,0 +1,602 @@
+/* Gerenciar Usuários - Polido com bordas visíveis e sombras sofisticadas */
+
+:root {
+    --primary-red: #E31E24;
+    --dark-red: #C41E3A;
+    --primary-color: #E31E24;
+    --primary-hover: #C41E3A;
+    --card-bg: #ffffff;
+    --input-bg: #f8f9fb;
+    --border-color: #d4d6db;
+    --hover-color: #e8eaef;
+    --secondary-color: #e8eaef;
+    --text-primary: #1a1a1a;
+    --text-secondary: #5a5a5a;
+    --cor-fundo-card: #ffffff;
+    --cor-borda: #d4d6db;
+    --cor-texto-principal: #1a1a1a;
+    --cor-texto-secundario: #5a5a5a;
+    --cor-input-fundo: #f8f9fb;
+    --cor-hover: rgba(26, 26, 26, 0.06);
+    --shadow-button: 0 4px 16px rgba(26, 26, 26, 0.15);
+}
+
+/* Botão de Retorno */
+.back-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    background: var(--primary-color);
+    color: #ffffff;
+    border-radius: 8px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    margin-right: 15px;
+    box-shadow: var(--shadow-button);
+    border: 1px solid var(--primary-color);
+}
+
+.back-button:hover {
+    background: var(--primary-hover);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 24px rgba(227, 30, 36, 0.3);
+}
+
+.back-button i {
+    font-size: 1.2rem;
+}
+
+.main-content {
+    padding: 100px 20px 20px;
+    min-height: 100vh;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* Seções */
+.add-user-section,
+.users-list-section {
+    background: var(--card-bg);
+    border-radius: 12px;
+    padding: 30px;
+    margin-bottom: 30px;
+    box-shadow: 0 4px 12px rgba(26, 26, 26, 0.12);
+    border: 1.5px solid var(--border-color);
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid var(--primary-color);
+}
+
+.section-header h2 {
+    color: var(--text-primary);
+    font-size: 1.5rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.section-header h2 i {
+    color: var(--primary-color);
+}
+
+/* Formulário de Usuário */
+.user-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.form-group label {
+    font-weight: 600;
+    color: var(--text-primary);
+    font-size: 0.9rem;
+}
+
+.form-group input,
+.form-group select {
+    padding: 12px;
+    border: 2px solid var(--border-color);
+    border-radius: 8px;
+    background: var(--card-bg);
+    color: var(--text-primary);
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 6px rgba(26, 26, 26, 0.06);
+}
+
+.form-group input::placeholder,
+.form-group select::placeholder {
+    color: var(--text-secondary);
+}
+
+.form-group input:focus,
+.form-group select:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 4px 12px rgba(227, 30, 36, 0.15);
+}
+
+/* Botões */
+.btn-primary,
+.btn-secondary {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+    box-shadow: var(--shadow-button);
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, var(--primary-color), var(--dark-red));
+    color: white;
+    border: 1px solid var(--primary-color);
+}
+
+.btn-primary:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 24px rgba(227, 30, 36, 0.3);
+}
+
+.btn-secondary {
+    background: var(--secondary-color);
+    color: var(--text-primary);
+    border: 1.5px solid var(--border-color);
+}
+
+.btn-secondary:hover {
+    background: var(--hover-color);
+    border-color: var(--primary-color);
+    box-shadow: 0 4px 12px rgba(26, 26, 26, 0.12);
+}
+
+.btn-danger {
+    background: #e74c3c;
+    color: white;
+    padding: 8px 16px;
+    border: 1px solid #e74c3c;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(231, 76, 60, 0.15);
+}
+
+.btn-danger:hover {
+    background: #c0392b;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(231, 76, 60, 0.25);
+}
+
+.btn-edit {
+    background: #f39c12;
+    color: white;
+    padding: 8px 16px;
+    border: 1px solid #f39c12;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-right: 8px;
+    box-shadow: 0 2px 8px rgba(243, 156, 18, 0.15);
+}
+
+.btn-edit:hover {
+    background: #e67e22;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(243, 156, 18, 0.25);
+}
+
+.btn-permissions {
+    background: #9b59b6;
+    color: white;
+    padding: 8px 16px;
+    border: 1px solid #9b59b6;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-right: 8px;
+    box-shadow: 0 2px 8px rgba(155, 89, 182, 0.15);
+}
+
+.btn-permissions:hover {
+    background: #8e44ad;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(155, 89, 182, 0.25);
+}
+
+/* Busca */
+.search-box {
+    position: relative;
+    width: 300px;
+}
+
+.search-box input {
+    width: 100%;
+    padding: 12px 45px 12px 15px;
+    border: 2px solid var(--border-color);
+    border-radius: 25px;
+    background: var(--input-bg);
+    color: var(--text-primary);
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 6px rgba(26, 26, 26, 0.06);
+}
+
+.search-box input::placeholder {
+    color: var(--text-secondary);
+}
+
+.search-box input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 4px 12px rgba(227, 30, 36, 0.15);
+}
+
+.search-box i {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-secondary);
+}
+
+/* Tabela de Usuários */
+.users-table-container {
+    overflow-x: auto;
+    border-radius: 8px;
+    border: 1.5px solid var(--border-color);
+}
+
+.users-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--card-bg);
+}
+
+.users-table th,
+.users-table td {
+    padding: 15px;
+    text-align: left;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.users-table th {
+    background: linear-gradient(135deg, var(--primary-color), var(--dark-red));
+    color: #ffffff;
+    font-weight: 600;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.users-table td {
+    color: var(--text-primary);
+    font-size: 0.95rem;
+}
+
+.users-table tbody tr:hover {
+    background: var(--hover-color);
+}
+
+.users-table tbody tr:nth-child(even) {
+    background: #fafbfc;
+}
+
+.users-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* Status e Badges */
+.role-badge {
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.role-admin {
+    background: #e74c3c;
+    color: white;
+}
+
+.role-manager {
+    background: #f39c12;
+    color: white;
+}
+
+.role-user {
+    background: #27ae60;
+    color: white;
+}
+
+.permissions-count {
+    background: var(--primary-color);
+    color: #ffffff;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.large-modal {
+    max-width: 900px;
+}
+
+@keyframes modalSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.modal-header {
+    padding: 25px 30px;
+    border-bottom: 2px solid var(--border-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: linear-gradient(135deg, var(--primary-color), var(--dark-red));
+    color: white;
+    border-radius: 12px 12px 0 0;
+}
+
+.modal-header h2 {
+    margin: 0;
+    font-size: 1.3rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.close-modal {
+    color: white;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.close-modal:hover {
+    transform: scale(1.1);
+}
+
+.modal-body {
+    padding: 30px;
+    background: var(--card-bg);
+}
+
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 15px;
+    margin-top: 25px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border-color);
+}
+
+/* Permissões */
+.user-info-header {
+    background: var(--hover-color);
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 25px;
+    border: 1.5px solid var(--border-color);
+}
+
+.user-info-header h3 {
+    margin: 0 0 5px 0;
+    color: var(--text-primary);
+    font-size: 1.2rem;
+}
+
+.user-info-header p {
+    margin: 0;
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+}
+
+.permissions-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 25px;
+}
+
+.permission-category {
+    background: var(--input-bg);
+    border-radius: 8px;
+    padding: 20px;
+    border: 1.5px solid var(--border-color);
+}
+
+.permission-category h4 {
+    margin: 0 0 15px 0;
+    color: var(--text-primary);
+    font-size: 1.1rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid var(--primary-red);
+}
+
+.permission-category h4 i {
+    color: var(--primary-red);
+}
+
+.permission-items {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.permission-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.permission-item:hover {
+    background: var(--cor-hover);
+}
+
+.permission-item input[type="checkbox"] {
+    display: none;
+}
+
+.checkmark {
+    width: 20px;
+    height: 20px;
+    border: 2px solid var(--border-color);
+    border-radius: 4px;
+    position: relative;
+    transition: all 0.3s ease;
+    flex-shrink: 0;
+    background: #fff;
+}
+
+.permission-item input[type="checkbox"]:checked + .checkmark {
+    background: var(--primary-red);
+    border-color: var(--primary-red);
+}
+
+/* Deixa MUITO claro quando o item está marcado */
+.permission-item input[type="checkbox"]:checked + .checkmark + .permission-text {
+    color: var(--text-primary);
+    font-weight: 700;
+}
+
+.permission-item:has(input[type="checkbox"]:checked) {
+    background: rgba(227, 30, 36, 0.08);
+    border: 1px solid rgba(227, 30, 36, 0.25);
+}
+
+.permission-item input[type="checkbox"]:checked + .checkmark::after {
+    content: '✓';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.permission-item span:not(.checkmark) {
+    color: var(--text-primary);
+    font-size: 0.95rem;
+    font-weight: 500;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .main-content {
+        padding: 80px 15px 15px;
+    }
+    
+    .section-header {
+        flex-direction: column;
+        gap: 15px;
+        align-items: flex-start;
+    }
+    
+    .search-box {
+        width: 100%;
+    }
+    
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+    
+    .modal-content {
+        width: 95%;
+        margin: 10% auto;
+    }
+    
+    .permissions-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .users-table-container {
+        font-size: 0.9rem;
+    }
+    
+    .users-table th,
+    .users-table td {
+        padding: 10px 8px;
+    }
+}
+
+body.dark-mode {
+    --card-bg: #252526;
+    --input-bg: #2d2d30;
+    --border-color: #3c3c3c;
+    --hover-color: #37373d;
+    --secondary-color: #3a3d41;
+    --text-primary: #f3f3f3;
+    --text-secondary: #b8bcc2;
+    --cor-fundo-card: #252526;
+    --cor-borda: #3c3c3c;
+    --cor-texto-principal: #f3f3f3;
+    --cor-texto-secundario: #b8bcc2;
+    --cor-input-fundo: #313134;
+    background: #1e1e1e;
+}
+
+body.dark-mode .users-table tbody tr:nth-child(even) {
+    background: #2d2d30;
+}
+
+body.dark-mode .checkmark {
+    background: #313134;
+    border-color: #55585e;
+}
+
+body.dark-mode .user-info-header,
+body.dark-mode .permission-category {
+    background: #2d2d30;
+}

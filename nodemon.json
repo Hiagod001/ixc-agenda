@@ -1,0 +1,16 @@
+{
+  "verbose": true,
+  "ignore": [
+    "agenda.db",
+    "agenda.db-journal",
+    "agenda.db-wal",
+    "*.log",
+    "public/*",
+    "*.txt"
+  ],
+  "watch": [
+    "src/",
+    "public/"
+  ],
+  "ext": "js,json"
+}

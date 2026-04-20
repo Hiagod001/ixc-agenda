@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Login - Agenda</title>
+<link href="login.css" rel="stylesheet"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet"/>
+<script src="dark-mode-system.js"></script>
+</head>
+<body>
+<div class="login-container">
+<div class="login-background">
+<div class="background-pattern"></div>
+</div>
+<div class="login-card">
+<div class="login-header">
+<img alt="Agenda" class="logo" src="logo-placeholder.svg"/>
+<h1>Sistema de Agenda</h1>
+<p>Faca login para acessar o sistema</p>
+</div>
+<form class="login-form" id="loginForm">
+<div class="form-group">
+<label class="field-label" for="username">Usuario</label>
+<div class="input-container">
+<i class="fas fa-user input-icon"></i>
+<input id="username" name="username" required="" type="text"/>
+</div>
+</div>
+<div class="form-group">
+<label class="field-label" for="password">Senha</label>
+<div class="input-container">
+<i class="fas fa-lock input-icon"></i>
+<input id="password" name="password" required="" type="password"/>
+<button class="toggle-password" onclick="togglePassword()" type="button">
+<i class="fas fa-eye"></i>
+</button>
+</div>
+</div>
+<button class="login-button" type="submit">
+<span class="button-text">Entrar</span>
+<div class="loading-spinner" style="display: none;">
+<i class="fas fa-spinner fa-spin"></i>
+</div>
+</button>
+<div class="error-message" id="errorMessage" style="display: none;"></div>
+</form>
+<div class="login-footer">
+<p>Ambiente interno de agenda</p>
+</div>
+</div>
+</div>
+
+<script src="login.js"></script>
+</body>
+</html>

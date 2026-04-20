@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gerenciar Cidades - Agenda</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="gerenciar-tecnicos.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+  <script src="dark-mode-system.js"></script>
+</head>
+<body>
+  <div class="loading-screen" id="loadingScreen">
+    <div class="loading-content">
+      <img class="loading-logo" src="logo-placeholder.svg" alt="Agenda" />
+      <div class="loading-spinner"><div class="spinner"></div></div>
+      <p>Carregando...</p>
+    </div>
+  </div>
+
+  <header class="header">
+    <div class="header-content">
+      <div class="header-left">
+        <a class="back-button" href="index.html" aria-label="Voltar">
+          <i class="fas fa-arrow-left"></i>
+        </a>
+        <img class="header-logo" src="logo-placeholder.svg" alt="Agenda" />
+        <h1>Gerenciar Cidades</h1>
+      </div>
+      <div class="header-right">
+        <div class="header-actions">
+          <a class="header-chip" href="agenda-dashboard.html"><i class="fas fa-calendar-check"></i> Dashboard</a>
+          <a class="header-chip" href="gerenciar-tecnicos.html"><i class="fas fa-hard-hat"></i> Tecnicos</a>
+        </div>
+        <div class="user-info">
+          <span class="user-name" id="userName">Carregando...</span>
+          <div class="user-menu">
+            <button class="user-button" onclick="toggleUserMenu()"><i class="fas fa-user-circle"></i></button>
+            <div class="user-dropdown" id="userDropdown">
+              <a href="index.html"><i class="fas fa-home"></i> Voltar ao Menu Principal</a>
+              <hr />
+              <a href="/logout"><i class="fas fa-sign-out-alt"></i> Sair</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="page-container">
+    <section class="page-hero">
+      <div class="page-hero__content">
+        <div>
+          <h2>Base de cidades</h2>
+          <p>Mantenha as cidades ativas do sistema sincronizadas com a operacao para evitar erro de cadastro e filtros quebrados.</p>
+        </div>
+        <div class="page-hero__actions">
+          <a class="btn btn-secondary" href="index.html"><i class="fas fa-home"></i> Menu principal</a>
+        </div>
+      </div>
+    </section>
+
+    <div class="card">
+      <div class="card-header">
+        <h2><i class="fas fa-city"></i> Cadastro de Cidades</h2>
+        <p>Adicione ou remova cidades que serao usadas na agenda.</p>
+      </div>
+
+      <form id="addCityForm" class="inline-form">
+        <div class="form-group">
+          <label for="cityName">Nome da cidade</label>
+          <input id="cityName" name="name" type="text" placeholder="Ex.: Patrocinio" required />
+        </div>
+        <button class="btn btn-primary" type="submit"><i class="fas fa-plus"></i> Adicionar</button>
+      </form>
+
+      <div class="table-wrapper">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Nome</th>
+              <th>Status</th>
+              <th style="width: 160px;">Acoes</th>
+            </tr>
+          </thead>
+          <tbody id="cityTableBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    function toggleUserMenu() {
+      const dd = document.getElementById('userDropdown');
+      dd.classList.toggle('show');
+    }
+    window.addEventListener('click', (e) => {
+      const dd = document.getElementById('userDropdown');
+      const btn = document.querySelector('.user-button');
+      if (!dd || !btn) return;
+      if (!dd.contains(e.target) && !btn.contains(e.target)) dd.classList.remove('show');
+    });
+  </script>
+  <script src="gerenciar-cidades.js"></script>
+</body>
+</html>

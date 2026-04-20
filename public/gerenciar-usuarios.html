@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Gerenciar Usuários - Agenda</title>
+<link href="style.css" rel="stylesheet"/>
+<link href="gerenciar-usuarios.css" rel="stylesheet"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet"/>
+<script src="dark-mode-system.js"></script>
+</head>
+<body>
+<!-- Loading Screen -->
+<div class="loading-screen" id="loadingScreen">
+<div class="loading-content">
+<img alt="Agenda" class="loading-logo" src="logo-placeholder.svg"/>
+<div class="loading-spinner">
+<div class="spinner"></div>
+</div>
+<p>Carregando gerenciamento de usuários...</p>
+</div>
+</div>
+<!-- Header -->
+<header class="header">
+<div class="header-content">
+<div class="header-left">
+<a class="back-button" href="index.html" title="Voltar ao Menu Principal">
+<i class="fas fa-arrow-left"></i>
+</a>
+<img alt="Agenda" class="header-logo" src="logo-placeholder.svg"/>
+<h1>Gerenciar Usuários</h1>
+</div>
+<div class="header-right">
+<div class="header-actions">
+<a class="header-chip" href="agenda-dashboard.html">
+<i class="fas fa-calendar-check"></i> Dashboard
+                            </a>
+<a class="header-chip" href="config-ixc.html">
+<i class="fas fa-cog"></i> IXC
+                            </a>
+</div>
+<div class="user-info">
+<span class="user-name" id="userName">Carregando...</span>
+<div class="user-menu">
+<button class="user-button" onclick="toggleUserMenu()">
+<i class="fas fa-user-circle"></i>
+</button>
+<div class="user-dropdown" id="userDropdown">
+<a href="index.html">
+<i class="fas fa-home"></i> Voltar ao Menu Principal
+                            </a>
+<a href="agenda-dashboard.html">
+<i class="fas fa-calendar"></i> Dashboard de Agenda
+                            </a>
+<hr/>
+<a href="/logout">
+<i class="fas fa-sign-out-alt"></i> Sair
+                            </a>
+</div>
+</div>
+</div>
+</div>
+</div>
+</header>
+<!-- Main Content -->
+<main class="main-content">
+<div class="container">
+<!-- Seção de Adicionar Usuário -->
+<section class="add-user-section">
+<div class="section-header">
+<h2><i class="fas fa-user-plus"></i> Adicionar Novo Usuário</h2>
+</div>
+<form class="user-form" id="addUserForm">
+<div class="form-row">
+<div class="form-group">
+<label for="newUsername">Nome de Usuário:</label>
+<input id="newUsername" name="username" placeholder="Digite o nome de usuário" required="" type="text"/>
+</div>
+<div class="form-group">
+<label for="newPassword">Senha:</label>
+<input id="newPassword" name="password" placeholder="Digite a senha" required="" type="password"/>
+</div>
+<div class="form-group">
+<label for="newRole">Função:</label>
+<select id="newRole" name="role" required="">
+<option value="">Selecione uma função</option>
+<option value="admin">Administrador</option>
+<option value="supervisor">Supervisor</option>
+<option value="agendamento">Agendamento</option>
+<option value="suporte">Suporte</option>
+</select>
+</div>
+</div>
+<button class="btn-primary" type="submit">
+<i class="fas fa-plus"></i> Adicionar Usuário
+                    </button>
+</form>
+</section>
+<!-- Seção de Lista de Usuários -->
+<section class="users-list-section">
+<div class="section-header">
+<h2><i class="fas fa-users"></i> Usuários Cadastrados</h2>
+<div class="search-box">
+<input id="searchUsers" onkeyup="filtrarUsuarios()" placeholder="Buscar usuários..." type="text"/>
+<i class="fas fa-search"></i>
+</div>
+</div>
+<div class="users-table-container">
+<table class="users-table" id="usersTable">
+<thead>
+<tr>
+<th>ID</th>
+<th>Usuário</th>
+<th>Função</th>
+<th>Permissões</th>
+<th>Data de Criação</th>
+<th>Ações</th>
+</tr>
+</thead>
+<tbody id="usersTableBody">
+<!-- Será preenchido via JavaScript -->
+</tbody>
+</table>
+</div>
+</section>
+</div>
+</main>
+<!-- Modal de Editar Usuário -->
+<div class="modal" id="editUserModal">
+<div class="modal-content">
+<div class="modal-header">
+<h2><i class="fas fa-user-edit"></i> Editar Usuário</h2>
+<span class="close-modal" onclick="fecharModalEditar()">×</span>
+</div>
+<div class="modal-body">
+<form id="editUserForm">
+<input id="editUserId" name="id" type="hidden"/>
+<div class="form-group">
+<label for="editUsername">Nome de Usuário:</label>
+<input id="editUsername" name="username" required="" type="text"/>
+</div>
+<div class="form-group">
+<label for="editPassword">Nova Senha (deixe em branco para manter a atual):</label>
+<input id="editPassword" name="password" placeholder="Digite nova senha ou deixe em branco" type="password"/>
+</div>
+<div class="form-group">
+<label for="editRole">Função:</label>
+<select id="editRole" name="role" required="">
+<option value="admin">Administrador</option>
+<option value="supervisor">Supervisor</option>
+<option value="agendamento">Agendamento</option>
+<option value="suporte">Suporte</option>
+</select>
+</div>
+<div class="form-actions">
+<button class="btn-secondary" onclick="fecharModalEditar()" type="button">Cancelar</button>
+<button class="btn-primary" type="submit">Salvar Alterações</button>
+</div>
+</form>
+</div>
+</div>
+</div>
+<!-- Modal de Gerenciar Permissões -->
+<div class="modal" id="permissionsModal">
+<div class="modal-content large-modal">
+<div class="modal-header">
+<h2><i class="fas fa-key"></i> Gerenciar Permissões</h2>
+<span class="close-modal" onclick="fecharModalPermissoes()">×</span>
+</div>
+<div class="modal-body">
+<div class="user-info-header">
+<h3>Usuário: <span id="permissionUserName"></span></h3>
+<p>Função: <span id="permissionUserRole"></span></p>
+</div>
+<form id="permissionsForm">
+<input id="permissionUserId" name="userId" type="hidden"/>
+<div class="permissions-grid">
+<div class="permission-category">
+<h4><i class="fas fa-calendar-alt"></i> Agenda</h4>
+<div class="permission-items">
+                                <label class="permission-item">
+<input name="permissions" type="checkbox" value="agenda.view"/>
+<span class="checkmark"></span>
+<span class="permission-text">Visualizar Agenda</span>
+                                </label>
+<label class="permission-item">
+<input name="permissions" type="checkbox" value="agenda.create"/>
+<span class="checkmark"></span>
+<span class="permission-text">Criar Agendamentos</span>
+                                </label>
+<label class="permission-item">
+<input name="permissions" type="checkbox" value="agenda.edit"/>
+<span class="checkmark"></span>
+<span class="permission-text">Editar Agendamentos</span>
+                                </label>
+<label class="permission-item">
+<input name="permissions" type="checkbox" value="agenda.delete"/>
+<span class="checkmark"></span>
+<span class="permission-text">Excluir Agendamentos</span>
+                                </label>
+<label class="permission-item">
+<input name="permissions" type="checkbox" value="agenda.allocate"/>
+<span class="checkmark"></span>
+<span class="permission-text">Alocar Agendamentos</span>
+                                </label>
+</div>
+</div>
+<div class="permission-category">
+<h4><i class="fas fa-users"></i> Usuários</h4>
+<div class="permission-items">
+                                <label class="permission-item">
+<input name="permissions" type="checkbox" value="users.view"/>
+<span class="checkmark"></span>
+<span class="permission-text">Visualizar Usuários</span>
+                                </label>
+<label class="permission-item">
+<input name="permissions" type="checkbox" value="users.manage"/>
+<span class="checkmark"></span>
+<span class="permission-text">Gerenciar Usuários (criar/editar/excluir)</span>
+                                </label>
+</div>
+</div>
+<div class="permission-category">
+<h4><i class="fas fa-cog"></i> Configurações</h4>
+<div class="permission-items">
+                                <label class="permission-item">
+<input name="permissions" type="checkbox" value="config.view"/>
+<span class="checkmark"></span>
+<span class="permission-text">Visualizar Configurações</span>
+                                </label>
+<label class="permission-item">
+<input name="permissions" type="checkbox" value="config.edit"/>
+<span class="checkmark"></span>
+<span class="permission-text">Editar Configurações / API IXC</span>
+                                </label>
+<label class="permission-item">
+<input name="permissions" type="checkbox" value="ixc.sync"/>
+<span class="checkmark"></span>
+<span class="permission-text">Sincronizar IXC manualmente</span>
+                                </label>
+
+                                <label class="permission-item">
+<input name="permissions" type="checkbox" value="vagas.view"/>
+<span class="checkmark"></span>
+<span class="permission-text">Visualizar Vagas</span>
+                                </label>
+<label class="permission-item">
+<input name="permissions" type="checkbox" value="vagas.manage"/>
+<span class="checkmark"></span>
+<span class="permission-text">Gerenciar Vagas (fechar/abrir)</span>
+                                </label>
+
+<label class="permission-item">
+<input name="permissions" type="checkbox" value="vagas.adjust"/>
+<span class="checkmark"></span>
+<span class="permission-text">Ajustar Vagas no Dashboard (+/-)</span>
+                                </label>
+
+<label class="permission-item">
+<input name="permissions" type="checkbox" value="subjects.manage"/>
+<span class="checkmark"></span>
+<span class="permission-text">Gerenciar Assuntos</span>
+</label>
+
+<label class="permission-item">
+<input name="permissions" type="checkbox" value="technicians.manage"/>
+<span class="checkmark"></span>
+<span class="permission-text">Gerenciar Técnicos</span>
+</label>
+
+<label class="permission-item">
+<input name="permissions" type="checkbox" value="cities.manage"/>
+<span class="checkmark"></span>
+<span class="permission-text">Gerenciar Cidades</span>
+</label>
+</div>
+</div>
+<div class="permission-category">
+<h4><i class="fas fa-chart-bar"></i> Relatórios</h4>
+<div class="permission-items">
+<label class="permission-item">
+<input name="permissions" type="checkbox" value="reports.view"/>
+<span class="checkmark"></span>
+<span class="permission-text">Visualizar Relatórios</span>
+</label>
+<label class="permission-item">
+<input name="permissions" type="checkbox" value="reports.export"/>
+<span class="checkmark"></span>
+<span class="permission-text">Exportar Relatórios</span>
+</label>
+                                <label class="permission-item">
+<input name="permissions" type="checkbox" value="logs.view"/>
+<span class="checkmark"></span>
+<span class="permission-text">Visualizar Logs</span>
+                                </label>
+</div>
+</div>
+</div>
+<div class="form-actions">
+<button class="btn-secondary" onclick="fecharModalPermissoes()" type="button">Cancelar</button>
+<button class="btn-primary" type="submit">Salvar Permissões</button>
+</div>
+</form>
+</div>
+</div>
+</div>
+<!-- Toast Notifications -->
+<div class="toast-container" id="toastContainer"></div>
+<script src="scripts.js"></script>
+
+<script src="gerenciar-usuarios.js"></script>
+</body>
+</html>

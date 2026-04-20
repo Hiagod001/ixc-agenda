@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Dashboard de Agenda</title>
+<link href="agenda-dashboard.css" rel="stylesheet"/>
+<link href="style.css" rel="stylesheet"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet"/>
+<script src="dark-mode-system.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+<!-- carregado cedo para manter preferências de tema -->
+
+</head>
+<div class="modal" id="dashboardEditModal">
+<div class="modal-content">
+<div class="modal-header">
+<h2>Editar Agendamento no Dashboard</h2>
+<span class="close-modal" onclick="fecharModalDashboard()">×</span>
+</div>
+<div class="modal-body">
+<form id="dashboardEditForm">
+<input id="dashboardEditId" name="id" type="hidden"/>
+<div class="form-group">
+<label for="dashboardEditTecnico">Técnico:</label>
+<select id="dashboardEditTecnico" name="tecnico">
+</select>
+</div>
+<div class="form-group">
+<label for="dashboardEditStatus">Status:</label>
+<select id="dashboardEditStatus" name="status">
+</select>
+</div>
+<div class="form-group">
+<label for="dashboardEditObservacao">Observações:</label>
+<textarea id="dashboardEditObservacao" name="observacoes" rows="4"></textarea>
+</div>
+<div class="form-actions">
+<button class="btn-excluir" id="dashboardDeleteBtn" type="button" onclick="excluirAgendamentoDoDashboard()" style="display:none">
+<i class="fas fa-trash"></i> Excluir Agendamento
+</button>
+<button class="btn-cancelar" id="dashboardUnallocateBtn" onclick="tirarAgendamentoDaVaga()" style="display:none" type="button">Tirar da vaga</button>
+<button class="btn-cancelar" onclick="fecharModalDashboard()" type="button">Cancelar</button>
+<button class="btn-salvar" type="submit">Salvar Alterações</button>
+</div>
+</form>
+</div>
+</div>
+</div>
+<body>
+<!-- Loading Screen -->
+<div class="loading-screen" id="loadingScreen">
+<div class="loading-content">
+<img alt="Agenda" class="loading-logo" src="logo-placeholder.svg"/>
+<div class="loading-spinner">
+<div class="spinner"></div>
+</div>
+<p>Carregando agenda...</p>
+</div>
+</div>
+<!-- Header -->
+<header class="header">
+<div class="header-content">
+<div class="header-left">
+<button class="menu-toggle" id="menuToggleBtn">
+<i class="fas fa-bars"></i>
+</button>
+<img alt="Agenda" class="header-logo" src="logo-placeholder.svg"/>
+<h1>Dashboard de Agenda</h1>
+</div>
+<div class="header-right">
+<div class="date-filter">
+<label for="dataAgenda">Filtrar por Data:</label>
+<input id="dataAgenda" onchange="carregarAgenda()" type="date"/>
+</div>
+<div class="city-filter">
+<select id="cidadeAgenda" onchange="carregarAgenda()">
+<option value="">Selecione a cidade</option>
+</select>
+</div>
+
+<div class="user-info">
+<span class="user-name" id="userName">Carregando...</span>
+<div class="user-menu">
+<button class="user-button" onclick="toggleUserMenu()">
+<i class="fas fa-user-circle"></i>
+</button>
+<div class="user-dropdown" id="userDropdown">
+<a href="index.html">
+<i class="fas fa-home"></i> Voltar ao Menu Principal
+                            </a>
+<hr/>
+<a href="/logout">
+<i class="fas fa-sign-out-alt"></i> Sair
+                            </a>
+</div>
+</div>
+</div>
+</div>
+</div>
+</header>
+<!-- Main Content -->
+<main class="agenda-main">
+<!-- Sidebar -->
+<aside class="agenda-sidebar" id="agendaSidebar">
+<!-- Agendamentos Aguardando -->
+<div class="aguardando-section permission-only" data-permission="agenda.view" style="display:none;">
+<h3><i class="fas fa-clock"></i> Aguardando Agendamento</h3>
+<div class="aguardando-search">
+<div class="aguardando-search-box" id="filtroAgendamentoBox">
+<div class="aguardando-search-tags" id="filtroAgendamentoTags"></div>
+<input id="filtroAgendamentoCliente" type="text" placeholder="Digite um termo e pressione Enter" autocomplete="off"/>
+</div>
+</div>
+<div class="aguardando-filtros-extras">
+<select id="filtroAgendamentoCidade">
+<option value="">Todas as cidades</option>
+</select>
+<select id="filtroAgendamentoStatus">
+<option value="">Todos os status</option>
+</select>
+</div>
+<div class="agendamentos-list" id="agendamentosAguardando">
+<!-- Será preenchido via JavaScript -->
+</div>
+</div>
+</aside>
+<!-- Área Principal da Agenda -->
+<section class="agenda-content">
+<div class="agenda-header">
+<h2>Vagas para <span id="cidadeAtual"></span></h2>
+<div class="agenda-info">
+<button class="btn-voltar" onclick="window.location.href='/'">
+<i class="fas fa-arrow-left"></i> Voltar ao Menu Principal
+                    </button>
+<button class="btn-consultar permission-only" data-permission="agenda.view" id="btnAbrirConsulta" style="display:none;">
+<i class="fas fa-search"></i> Consultar OS
+                    </button>
+<button class="btn-consultar permission-only" data-permission="ixc.sync" id="btnSyncIxc" style="display:none;">
+<i class="fas fa-rotate"></i> Sincronizar IXC
+                    </button>
+<span class="sync-status" id="ixcSyncStatus">Carregando quadro local…</span>
+<span>Olá, <span id="userNameAgenda">usuario</span></span>
+<button class="btn-sair" onclick="window.location.href='/logout'">Sair</button>
+</div>
+</div>
+<div class="agenda-tabs">
+<button class="tab-btn active" id="tab-fibra" onclick="mudarAgenda('FIBRA')">
+<i class="fas fa-wave-square"></i> Agenda Fibra
+                </button>
+<button class="tab-btn" id="tab-radio" onclick="mudarAgenda('RADIO')">
+<i class="fas fa-satellite-dish"></i> Agenda Rádio
+                </button>
+</div>
+<div class="periodo-switch">
+<button class="periodo-switch-btn active" id="btnPeriodoManha" type="button">Manhã</button>
+<button class="periodo-switch-btn" id="btnPeriodoTarde" type="button">Tarde</button>
+</div>
+<div class="agenda-grid kanban-board" id="kanbanBoard"></div>
+</section>
+</main>
+<!-- Modal de Edição de Agendamento -->
+<div class="modal" id="editarAgendamentoModal">
+<div class="modal-content">
+<div class="modal-header">
+<h2>Editar Agendamento</h2>
+<span class="close-modal" onclick="fecharModalEditar()">×</span>
+</div>
+<div class="modal-body">
+<form id="editarAgendamentoForm">
+<input id="editarAgendamentoId" type="hidden"/>
+<div class="form-group">
+<label for="editarCliente">Cliente:</label>
+<input id="editarCliente" name="cliente" required="" type="text"/>
+</div>
+<div class="form-group">
+<label for="editarCidade">Cidade:</label>
+<select id="editarCidade" name="cidade" required="">
+<option value="">Selecione a cidade</option>
+</select>
+</div>
+<div class="form-group">
+<label for="editarAssunto">Assunto:</label>
+<select id="editarAssunto" name="assunto" required="">
+<option value="">Selecione um assunto</option>
+</select>
+</div>
+<div class="form-group">
+<label for="editarDataHora">Data e Hora:</label>
+<input id="editarDataHora" name="data_hora" required="" type="datetime-local"/>
+</div>
+<div class="form-group">
+<label for="editarTecnico">Técnico:</label>
+<select id="editarTecnico" name="tecnico">
+<option value="">Selecione um técnico</option>
+</select>
+</div>
+<div class="form-group">
+<label for="editarStatus">Status:</label>
+<select id="editarStatus" name="status">
+<option value="">Selecione um status</option>
+</select>
+</div>
+<div class="form-group">
+<label for="editarObservacao">Observações:</label>
+<textarea id="editarObservacao" name="observacao" rows="3"></textarea>
+</div>
+<div class="form-actions">
+<button class="btn-cancelar" onclick="fecharModalEditar()" type="button">Cancelar</button>
+<button class="btn-salvar" type="submit">Salvar Alterações</button>
+</div>
+</form>
+</div>
+</div>
+</div>
+<!-- Modal de Consulta (Filtros + Paginação + Ordenação) -->
+<div class="modal-overlay" id="consultaModal" style="display:none;">
+<div class="modal-content modal-consulta">
+<div class="modal-header">
+<h3><i class="fas fa-search"></i> Consultar Agendamentos</h3>
+<button aria-label="Fechar" class="modal-close" id="btnFecharConsulta">
+<i class="fas fa-times"></i>
+</button>
+</div>
+<div class="consulta-filtros">
+<div class="form-row">
+<div class="form-group">
+<label for="consultaCliente">Cliente</label>
+<input id="consultaCliente" placeholder="Nome do cliente..." type="text">
+</input></div>
+<div class="form-group">
+<label for="consultaCidade">Cidade</label>
+<select id="consultaCidade">
+<option value="">Todas</option>
+</select>
+</div>
+<div class="form-group">
+<label for="consultaTecnico">Técnico</label>
+<select id="consultaTecnico">
+<option value="">Todos</option>
+</select>
+</div>
+</div>
+<div class="form-row">
+<div class="form-group">
+<label for="consultaStatus">Status</label>
+<select id="consultaStatus">
+<option value="">Todos</option>
+</select>
+</div>
+<div class="form-group">
+<label for="consultaPeriodo">Período</label>
+<select id="consultaPeriodo">
+<option value="">Manhã/Tarde</option>
+<option value="MANHÃ">Manhã</option>
+<option value="TARDE">Tarde</option>
+</select>
+</div>
+<div class="form-group">
+<label for="consultaTipoOs">Tipo</label>
+<select id="consultaTipoOs">
+<option value="">Todos</option>
+<option value="FIBRA">Fibra</option>
+<option value="RADIO">Rádio</option>
+</select>
+</div>
+</div>
+<div class="form-row">
+<div class="form-group">
+<label for="consultaDataIni">Data início</label>
+<input id="consultaDataIni" type="date">
+</input></div>
+<div class="form-group">
+<label for="consultaDataFim">Data fim</label>
+<input id="consultaDataFim" type="date">
+</input></div>
+<div class="form-group">
+<label for="consultaOrdenacao">Ordenar por</label>
+<select id="consultaOrdenacao">
+<option value="data_hora:desc">Data/Hora (desc)</option>
+<option value="data_hora:asc">Data/Hora (asc)</option>
+<option value="created_at:desc">Criação (desc)</option>
+<option value="created_at:asc">Criação (asc)</option>
+<option value="id:desc">ID (desc)</option>
+<option value="id:asc">ID (asc)</option>
+<option value="cliente:asc">Cliente (A-Z)</option>
+<option value="cliente:desc">Cliente (Z-A)</option>
+</select>
+</div>
+</div>
+<div class="consulta-acoes">
+<div class="left">
+<label class="inline">
+                            Itens por página
+                            <select id="consultaPageSize">
+<option value="10">10</option>
+<option selected="" value="20">20</option>
+<option value="50">50</option>
+<option value="100">100</option>
+</select>
+</label>
+</div>
+<div class="right">
+<button class="btn-secondary" id="btnLimparConsulta"><i class="fas fa-eraser"></i> Limpar</button>
+<button class="btn-primary" id="btnBuscarConsulta"><i class="fas fa-search"></i> Buscar</button>
+</div>
+</div>
+</div>
+<div class="consulta-resultados">
+<div class="consulta-meta" id="consultaMeta"></div>
+<div class="consulta-table-wrap">
+<table class="consulta-table">
+<thead>
+<tr>
+<th>ID</th>
+<th>Cliente</th>
+<th>Cidade</th>
+<th>Assunto</th>
+<th>Status</th>
+<th>Técnico</th>
+<th>Data/Hora</th>
+<th>Tipo</th>
+</tr>
+</thead>
+<tbody id="consultaTbody">
+<tr><td colspan="8" style="text-align:center; padding: 14px; opacity: .7;">Faça uma busca.</td></tr>
+</tbody>
+</table>
+</div>
+<div class="consulta-paginacao">
+<button class="btn-secondary" id="consultaPrev"><i class="fas fa-chevron-left"></i> Anterior</button>
+<div class="consulta-page" id="consultaPageInfo"></div>
+<button class="btn-secondary" id="consultaNext">Próxima <i class="fas fa-chevron-right"></i></button>
+</div>
+</div>
+</div>
+</div>
+<!-- Toast Notifications -->
+<div class="toast-container" id="toastContainer"></div>
+<!-- Scripts -->
+<script defer="" src="agenda-dashboard.js"></script>
+</body>
+</html>

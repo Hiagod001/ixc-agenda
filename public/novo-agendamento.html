@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>Novo Agendamento - Agenda</title>
+  <link href="style.css" rel="stylesheet"/>
+  <link href="novo-agendamento.css" rel="stylesheet"/>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet"/>
+  <script src="dark-mode-system.js"></script>
+</head>
+<body>
+  <!-- Toast Container -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <header class="main-header">
+    <div class="header-content">
+      <div class="header-left">
+        <button class="menu-toggle" onclick="window.location.href='/'" title="Voltar ao menu">
+          <i class="fas fa-arrow-left"></i>
+        </button>
+        <img alt="Agenda" class="header-logo" src="logo-placeholder.svg"/>
+        <h1>Novo Agendamento</h1>
+      </div>
+
+      <div class="header-right">
+        <div class="header-actions">
+          <a class="header-chip" href="agenda-dashboard.html"><i class="fas fa-calendar-check"></i> Dashboard</a>
+          <a class="header-chip" href="/"><i class="fas fa-home"></i> Menu</a>
+        </div>
+        <div class="user-info">
+          <span class="user-name" id="userName">Carregando...</span>
+          <div class="user-menu">
+            <button class="user-button" id="userMenuBtn" type="button" title="Menu do usuário">
+              <i class="fas fa-user-circle"></i>
+            </button>
+            <div class="user-dropdown" id="userDropdown">
+              <a href="agenda-dashboard.html"><i class="fas fa-calendar-check"></i> Dashboard de Agenda</a>
+              <a href="/"><i class="fas fa-home"></i> Menu Principal</a>
+              <hr/>
+              <a href="/logout"><i class="fas fa-sign-out-alt"></i> Sair</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="page-container">
+    <section class="page-hero">
+      <div class="page-hero__content">
+        <div>
+          <h2>Novo agendamento</h2>
+          <p>Use esta tela para cadastrar uma OS rapidamente e enviar o item para a fila de alocacao no dashboard.</p>
+        </div>
+        <div class="page-hero__actions">
+          <a class="btn btn-secondary" href="agenda-dashboard.html"><i class="fas fa-arrow-right"></i> Ir para o dashboard</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="card-header">
+        <h2><i class="fas fa-plus-circle"></i> Criar agendamento (fica em “Aguardando agendamento”)</h2>
+        <p class="muted">Preencha os dados, clique em <strong>Criar</strong> e depois arraste no Dashboard de Agenda para agendar.</p>
+      </div>
+
+      <form class="form-grid" id="novoAgendamentoForm">
+        <div class="form-group span-2">
+          <label for="clienteId">ID do Cliente:</label>
+          <div class="input-with-button">
+            <input id="clienteId" name="id" placeholder="Ex: 12345" required type="text"/>
+            <button class="btn-secondary" id="btnBuscarCliente" type="button">
+              <i class="fas fa-search"></i> Buscar
+            </button>
+          </div>
+        </div>
+
+        <div class="form-group span-2">
+          <label for="clienteNome">Cliente:</label>
+          <input id="clienteNome" name="cliente" placeholder="Aguardando busca..." readonly type="text"/>
+        </div>
+
+        <div class="form-group">
+          <label>Tipo de OS:</label>
+          <div class="radio-row">
+            <label class="radio-pill">
+              <input checked id="tipo_fibra" name="tipo_os" type="radio" value="FIBRA"/>
+              <span>Fibra</span>
+            </label>
+            <label class="radio-pill">
+              <input id="tipo_radio" name="tipo_os" type="radio" value="RADIO"/>
+              <span>Rádio</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="cidadeOs">Cidade:</label>
+          <select id="cidadeOs" name="cidade" required>
+            <option value="">Selecione a cidade</option>
+          </select>
+        </div>
+
+        <div class="form-group span-2">
+          <label for="assuntoOs">Assunto:</label>
+          <select id="assuntoOs" name="assunto" required>
+            <option value="">Selecione um assunto</option>
+          </select>
+          <small class="help">Só aparecem assuntos <strong>ativos</strong>.</small>
+        </div>
+
+        <div class="form-group span-2">
+          <label>Tipo de instalação:</label>
+          <label class="checkbox-card" for="instalacaoPredial">
+            <input id="instalacaoPredial" name="instalacao_predial" type="checkbox" value="1"/>
+            <span>
+              <strong>Instalação predial</strong>
+              <small>Marque somente quando esta OS precisar ocupar <strong>2 vagas</strong> no dashboard. Desmarcado = residencial, ocupando <strong>1 vaga</strong>.</small>
+            </span>
+          </label>
+        </div>
+
+        <div class="form-group span-2">
+          <label for="observacaoOs">Observações:</label>
+          <textarea id="observacaoOs" name="observacao" placeholder="Observações adicionais..." rows="3"></textarea>
+        </div>
+
+        <div class="form-actions span-2">
+          <button class="btn-primary" type="submit">
+            <i class="fas fa-plus"></i> Criar agendamento
+          </button>
+          <button class="btn-secondary" type="button" id="btnLimpar">
+            <i class="fas fa-eraser"></i> Limpar
+          </button>
+          <a class="btn-link" href="agenda-dashboard.html">
+            Ir para o Dashboard de Agenda <i class="fas fa-arrow-right"></i>
+          </a>
+        </div>
+      </form>
+    </section>
+  </main>
+
+  <script src="novo-agendamento.js"></script>
+</body>
+</html>

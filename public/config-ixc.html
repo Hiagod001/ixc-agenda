@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Configurar API IXC - Agenda</title>
+<link href="style.css" rel="stylesheet"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet"/>
+<script src="dark-mode-system.js"></script>
+<style>
+  .config-shell {
+    max-width: 980px;
+    margin: 0 auto;
+  }
+
+  .config-card {
+    background: var(--white);
+    border: 1.5px solid var(--cor-borda);
+    border-radius: 20px;
+    box-shadow: var(--shadow);
+    overflow: hidden;
+  }
+
+  .config-card__header {
+    padding: 1.5rem 1.5rem 0;
+  }
+
+  .config-card__header h2 {
+    margin: 0 0 0.4rem;
+    color: var(--cor-texto-principal);
+  }
+
+  .config-card__header p {
+    margin: 0;
+    color: var(--cor-texto-secundario);
+  }
+
+  .config-form {
+    padding: 1.5rem;
+    display: grid;
+    gap: 1.25rem;
+  }
+
+  .config-form label {
+    font-weight: 600;
+    color: var(--cor-texto-principal);
+  }
+
+  .config-form input {
+    width: 100%;
+  }
+
+  .config-form__hint {
+    color: var(--medium-gray);
+    font-size: 0.92rem;
+    margin-top: 0.45rem;
+  }
+
+  .config-actions {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+  }
+
+  .status-panel {
+    margin: 0 1.5rem 1.5rem;
+    padding: 1rem 1.1rem;
+    border-radius: 14px;
+    border: 1px solid transparent;
+    display: none;
+  }
+
+  .status-panel.is-success {
+    display: block;
+    background: #e8f7ed;
+    border-color: #b9e5c5;
+    color: #17633a;
+  }
+
+  .status-panel.is-error {
+    display: block;
+    background: #fdeeee;
+    border-color: #f5c2c7;
+    color: #8f2230;
+  }
+
+  @media (max-width: 768px) {
+    .config-form,
+    .config-card__header,
+    .status-panel {
+      padding-left: 1rem;
+      padding-right: 1rem;
+    }
+  }
+</style>
+</head>
+<body>
+<header class="header">
+  <div class="header-content">
+    <div class="header-left">
+      <a class="back-button" href="index.html" aria-label="Voltar">
+        <i class="fas fa-arrow-left"></i>
+      </a>
+      <img alt="Agenda" class="header-logo" src="logo-placeholder.svg"/>
+      <h1>Configurar API IXC</h1>
+    </div>
+    <div class="header-right">
+      <div class="header-actions">
+        <a class="header-chip" href="index.html"><i class="fas fa-home"></i> Menu</a>
+        <a class="header-chip" href="agenda-dashboard.html"><i class="fas fa-calendar-check"></i> Dashboard</a>
+      </div>
+      <div class="user-info">
+        <span class="user-name" id="userName">Carregando...</span>
+        <div class="user-menu">
+          <button class="user-button" id="userMenuBtn" type="button">
+            <i class="fas fa-user-circle"></i>
+          </button>
+          <div class="user-dropdown" id="userDropdown">
+            <a href="index.html"><i class="fas fa-home"></i> Voltar ao Menu Principal</a>
+            <hr/>
+            <a href="/logout"><i class="fas fa-sign-out-alt"></i> Sair</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="page-container">
+  <div class="config-shell">
+    <section class="page-hero">
+      <div class="page-hero__content">
+        <div>
+          <h2>Integracao com o IXC</h2>
+          <p>Centralize a URL e o token da API em um unico lugar. Esta tela foi ajustada para nao expor credenciais no HTML e ficar consistente com os demais menus.</p>
+        </div>
+        <div class="page-hero__actions">
+          <button class="btn btn-info" onclick="testarApi()" type="button"><i class="fas fa-vial"></i> Testar conexao</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="config-card">
+      <div class="config-card__header">
+        <h2>Parametros da API</h2>
+        <p>As alteracoes sao salvas no banco e passam a valer para o backend imediatamente.</p>
+      </div>
+
+      <form class="config-form" id="configForm">
+        <div class="form-group">
+          <label for="apiUrl">URL da API</label>
+          <input id="apiUrl" name="apiUrl" placeholder="https://exemplo.ixcsoft.com.br/webservice/v1" required="" type="text"/>
+          <div class="config-form__hint">Informe a base da API Webservice v1 do IXC.</div>
+        </div>
+
+        <div class="form-group">
+          <label for="apiToken">Token de autenticacao</label>
+          <input id="apiToken" name="apiToken" placeholder="usuario:token" required="" type="text"/>
+          <div class="config-form__hint">O token fica carregado via API apos autenticacao, sem ficar hardcoded na pagina.</div>
+        </div>
+
+        <div class="config-actions">
+          <button class="btn btn-secondary" onclick="window.location.href='index.html'" type="button">
+            <i class="fas fa-arrow-left"></i> Voltar
+          </button>
+          <button class="btn btn-info" onclick="testarApi()" type="button">
+            <i class="fas fa-vial"></i> Testar API
+          </button>
+          <button class="btn btn-primary" type="submit">
+            <i class="fas fa-save"></i> Salvar configuracoes
+          </button>
+        </div>
+      </form>
+
+      <div class="status-panel" id="statusContainer">
+        <p id="statusMessage"></p>
+      </div>
+    </section>
+  </div>
+</main>
+
+<script>
+  let currentUser = null;
+
+  document.addEventListener('DOMContentLoaded', function() {
+    bindMenu();
+    initPage();
+    document.getElementById('configForm').addEventListener('submit', salvarConfiguracoes);
+  });
+
+  function bindMenu() {
+    const button = document.getElementById('userMenuBtn');
+    const dropdown = document.getElementById('userDropdown');
+
+    button?.addEventListener('click', function(event) {
+      event.stopPropagation();
+      dropdown?.classList.toggle('show');
+    });
+
+    document.addEventListener('click', function(event) {
+      if (!dropdown || !button) return;
+      if (!dropdown.contains(event.target) && !button.contains(event.target)) {
+        dropdown.classList.remove('show');
+      }
+    });
+  }
+
+  async function initPage() {
+    const user = await carregarUsuario();
+    if (!user) return;
+
+    const perms = user.permissions || [];
+    if (!perms.includes('config.view')) {
+      window.location.href = '/index.html';
+      return;
+    }
+
+    await carregarConfiguracoes();
+  }
+
+  async function carregarUsuario() {
+    try {
+      const response = await fetch('/api/user', { cache: 'no-store' });
+      if (!response.ok) {
+        window.location.href = '/login.html';
+        return null;
+      }
+
+      currentUser = await response.json();
+      document.getElementById('userName').textContent = currentUser.username || 'Usuario';
+      return currentUser;
+    } catch (error) {
+      console.error('Erro ao validar sessao:', error);
+      window.location.href = '/login.html';
+      return null;
+    }
+  }
+
+  async function carregarConfiguracoes() {
+    try {
+      const response = await fetch('/api/config/ixc');
+      if (!response.ok) throw new Error('Falha ao carregar configuracoes.');
+
+      const config = await response.json();
+      document.getElementById('apiUrl').value = config.apiUrl || '';
+      document.getElementById('apiToken').value = config.apiToken || '';
+    } catch (error) {
+      console.error('Erro ao carregar configuracoes:', error);
+      mostrarStatus('Nao foi possivel carregar as configuracoes atuais.', false);
+    }
+  }
+
+  async function salvarConfiguracoes(event) {
+    event.preventDefault();
+
+    const apiUrl = document.getElementById('apiUrl').value.trim();
+    const apiToken = document.getElementById('apiToken').value.trim();
+
+    if (!apiUrl || !apiToken) {
+      mostrarStatus('Preencha todos os campos obrigatorios.', false);
+      return;
+    }
+
+    try {
+      const response = await fetch('/api/config/ixc', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ apiUrl, apiToken })
+      });
+
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok) {
+        mostrarStatus(data.error || 'Erro ao salvar configuracoes.', false);
+        return;
+      }
+
+      mostrarStatus('Configuracoes salvas com sucesso.', true);
+    } catch (error) {
+      console.error('Erro ao salvar configuracoes:', error);
+      mostrarStatus('Erro ao salvar configuracoes.', false);
+    }
+  }
+
+  async function testarApi() {
+    const apiUrl = document.getElementById('apiUrl').value.trim();
+    const apiToken = document.getElementById('apiToken').value.trim();
+
+    if (!apiUrl || !apiToken) {
+      mostrarStatus('Preencha URL e token antes de testar.', false);
+      return;
+    }
+
+    try {
+      const response = await fetch('/api/config/ixc/test', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ apiUrl, apiToken })
+      });
+
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok) {
+        mostrarStatus(data.error || 'Falha ao testar conexao com a API.', false);
+        return;
+      }
+
+      mostrarStatus('Conexao com a API IXC estabelecida com sucesso.', true);
+    } catch (error) {
+      console.error('Erro ao testar API:', error);
+      mostrarStatus('Erro ao testar conexao com a API.', false);
+    }
+  }
+
+  function mostrarStatus(mensagem, sucesso) {
+    const statusContainer = document.getElementById('statusContainer');
+    const statusMessage = document.getElementById('statusMessage');
+
+    statusContainer.className = 'status-panel';
+    statusContainer.classList.add(sucesso ? 'is-success' : 'is-error');
+    statusMessage.textContent = mensagem;
+  }
+</script>
+</body>
+</html>
