@@ -1,18 +1,55 @@
 # IXC Agenda
 
-Aplicacao web para gerenciar agenda de ordens de servico com Node.js, Express, SQLite e integracao opcional com IXC.
+![Node.js](https://img.shields.io/badge/Node.js-14%2B-339933?style=for-the-badge&logo=node.js&logoColor=white)
+![Express](https://img.shields.io/badge/Express-API-111111?style=for-the-badge&logo=express&logoColor=white)
+![SQLite](https://img.shields.io/badge/SQLite-local-003B57?style=for-the-badge&logo=sqlite&logoColor=white)
+![IXC](https://img.shields.io/badge/IXC-integra%C3%A7%C3%A3o-0A66C2?style=for-the-badge)
 
-## Como executar
+Aplicação web para gerenciar agenda de ordens de serviço com Node.js, Express, SQLite e integração opcional com o IXC.
+
+## Visão Geral
+
+O IXC Agenda organiza vagas, agendamentos, usuários e relatórios em uma interface web voltada para operação técnica. A integração com IXC pode ser configurada por ambiente ou pela própria aplicação, mantendo o sistema flexível para uso interno.
+
+## Recursos
+
+- Gestão de agendamentos de ordens de serviço.
+- Controle de vagas por cidade, período e equipe.
+- Autenticação de usuários.
+- Relatórios e consultas operacionais.
+- Integração opcional com IXC.
+- Banco SQLite local.
+- Smoke test para validação rápida.
+
+<details>
+<summary>Fluxo de operação</summary>
+
+1. Configure ambiente, banco e credenciais iniciais.
+2. Cadastre usuários e parâmetros de agenda.
+3. Consulte disponibilidade de vagas.
+4. Registre ou ajuste agendamentos.
+5. Use relatórios para acompanhar a operação.
+
+</details>
+
+## Stack
+
+| Camada | Tecnologia |
+| --- | --- |
+| Backend | Node.js, Express |
+| Banco | SQLite |
+| Integração | Axios + API IXC |
+| Segurança | bcrypt, sessão Express, CORS |
+| Desenvolvimento | Nodemon |
+
+## Instalação
 
 ```bash
 npm install
 cp .env.example .env
-npm start
 ```
 
-Por padrao, a aplicacao sobe em `http://localhost:3001`.
-
-## Variaveis de ambiente
+Edite o `.env` conforme o ambiente:
 
 ```env
 PORT=3001
@@ -25,16 +62,45 @@ IXC_TOKEN=
 DB_PATH=./agenda.db
 ```
 
-Se `INIT_ADMIN_PASSWORD` nao for definido e o banco estiver vazio, o sistema gera uma senha temporaria no log de inicializacao.
+## Execução
 
-## O que fica fora do git
+```bash
+npm start
+```
+
+Modo desenvolvimento:
+
+```bash
+npm run dev
+```
+
+Endereço padrão:
+
+```text
+http://localhost:3001
+```
+
+## Teste Rápido
+
+```bash
+npm test
+```
+
+## Segurança
+
+- Não versionar `.env`.
+- Usar `SESSION_SECRET` forte em produção.
+- Trocar a senha inicial do admin.
+- Proteger tokens IXC fora do repositório.
+
+<details>
+<summary>Arquivos que ficam fora do Git</summary>
 
 - `.env`
-- `agenda.db`, `agenda.db-shm`, `agenda.db-wal`
+- `agenda.db`
+- `agenda.db-shm`
+- `agenda.db-wal`
 - logs
-- `public/logo.png`
+- arquivos operacionais reais
 
-## Observacoes
-
-- A integracao IXC pode ser configurada por ambiente ou pela interface da aplicacao.
-- O repositório foi higienizado para publicacao sem dados operacionais reais, credenciais conhecidas ou marca privada.
+</details>
